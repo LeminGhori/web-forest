@@ -1,0 +1,31 @@
+/* styles.css */
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.input-group {
+  display: flex;
+}
+
+.form-control {
+  flex: 1;
+  border-radius: 5px 0 0 5px;
+}
+
+.btn {
+  border-radius: 0 5px 5px 0;
+}
+
+.avatar {
+  width: 150px;
+  height: 150px;
+  display: block;
+  margin: 0 auto;
+}
+
+.text-danger {
+  color: red;
+}

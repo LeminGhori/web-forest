@@ -1,24 +1,26 @@
-import logo from './logo.svg';
+import Form from './components/Form/Form';
 import './App.css';
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ErrorPage from './components/ErrorPage';
+import { useState } from 'react';
+import RepositoryList from './components/List/RepositoryList';
+import Search from './components/List/Search';
 function App() {
+  const [isLogin, setIsLogin] = useState(false);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      {
+        isLogin ?
+          <Routes>
+            <Route index element={<Search />} />
+            <Route path="*" element={<ErrorPage />} />
+          </Routes>
+          :
+          <Routes>
+            <Route index element={<Form setIsLogin={setIsLogin} />} />
+          </Routes>
+      }
+    </BrowserRouter>
   );
 }
 
