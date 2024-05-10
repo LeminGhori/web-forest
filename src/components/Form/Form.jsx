@@ -3,8 +3,10 @@ import "./form.css";
 import axios from 'axios'; // Import Axios
 function Form({ setIsLogin }) {
     const [formType, setFormType] = useState(false);
+    const [isOtp, setIsOtp] = useState(false);
+    const [loginToken, setLoginToken] = useState(false);
     const [signIn, setSignIn] = useState({
-        username: "",
+        email: "",
         password: "",
     });
 
@@ -14,6 +16,8 @@ function Form({ setIsLogin }) {
         password: "",
         confirmPassword: "",
     });
+
+    const [otp, setOtp] = useState('');
 
     const handleSignInInput = (e) => {
         const { name, value } = e.target;
@@ -36,14 +40,9 @@ function Form({ setIsLogin }) {
 
         try {
             // Make a POST request to your sign-in API endpoint
-            await axios.post('your_sign_in_api_endpoint', {
-                // Pass any necessary data for sign-in (e.g., username, password)
-                // Replace 'your_sign_in_api_endpoint' with your actual API endpoint
-                // Replace 'username' and 'password' with your actual form data
-                username: 'username',
-                password: 'password'
-            }).then((res) => {
-                setIsLogin(true);
+            await axios.post('http://localhost:7000/api/user/login', signIn).then((res) => {
+                setLoginToken(res.data.token);
+                setIsOtp(true);
             }).catch((err) => {
                 console.log(err);
             })
@@ -59,15 +58,33 @@ function Form({ setIsLogin }) {
 
         try {
             // Make a POST request to your sign-up API endpoint
-            await axios.post('your_sign_up_api_endpoint', {
+            await axios.post('http://localhost:7000/api/user/signup', {
                 // Pass any necessary data for sign-up (e.g., username, email, password)
                 // Replace 'your_sign_up_api_endpoint' with your actual API endpoint
                 // Replace 'username', 'email', and 'password' with your actual form data
-                username: 'username',
-                email: 'email@example.com',
-                password: 'password'
+                username: signUp?.username,
+                email: signUp?.email,
+                password: signUp?.password
             }).then((res) => {
                 setFormType(false);
+            }).catch((err) => {
+                console.log(err);
+            })
+        } catch (error) {
+            // Handle errors (e.g., display error message)
+            console.error('Error signing up:', error);
+        }
+    };
+    const handleCheckOtp = async (e) => {
+        e.preventDefault();
+
+        try {
+            // Make a POST request to your sign-up API endpoint
+            await axios.post('http://localhost:7000/api/user/verifyotp', {
+                token: loginToken,
+                otp: otp
+            }).then((res) => {
+                setIsLogin(true);
             }).catch((err) => {
                 console.log(err);
             })
@@ -146,29 +163,47 @@ function Form({ setIsLogin }) {
                 <div className="col align-items-center flex-col sign-in">
                     <div className="form-wrapper align-items-center">
                         <div className="form sign-in">
-                            <form onSubmit={handleSignIn}>
-                                <div className="input-group">
-                                    <i className="bx bxs-user"></i>
-                                    <input
-                                        type="text"
-                                        name="username"
-                                        placeholder="Username"
-                                        value={signIn.username}
-                                        onChange={handleSignInInput}
-                                    />
-                                </div>
-                                <div className="input-group">
-                                    <i className="bx bxs-lock-alt"></i>
-                                    <input
-                                        type="password"
-                                        name="password"
-                                        placeholder="Password"
-                                        value={signIn.password}
-                                        onChange={handleSignInInput}
-                                    />
-                                </div>
-                                <button type="submit">Sign in</button>
-                            </form>
+                            {
+                                isOtp ?
+                                    <form onSubmit={handleCheckOtp}>
+                                        <div className="input-group">
+                                            <i className="bx bxs-lock-alt"></i>
+                                            <input
+                                                type="otp"
+                                                name="otp"
+                                                placeholder="OTP"
+                                                value={otp}
+                                                onChange={(e) => { setOtp(e.target.value) }}
+                                            />
+                                        </div>
+                                        <button type="submit">Verify OTP</button>
+                                    </form>
+                                    :
+                                    <form onSubmit={handleSignIn}>
+                                        <div className="input-group">
+                                            <i className="bx bxs-user"></i>
+                                            <input
+                                                type="text"
+                                                name="email"
+                                                placeholder="email"
+                                                value={signIn.email}
+                                                onChange={handleSignInInput}
+                                            />
+                                        </div>
+                                        <div className="input-group">
+                                            <i className="bx bxs-lock-alt"></i>
+                                            <input
+                                                type="password"
+                                                name="password"
+                                                placeholder="Password"
+                                                value={signIn.password}
+                                                onChange={handleSignInInput}
+                                            />
+                                        </div>
+                                        <button type="submit">Sign in</button>
+                                    </form>
+                            }
+
                             <p>
                                 <b>Forgot password?</b>
                             </p>
