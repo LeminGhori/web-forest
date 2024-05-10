@@ -4,23 +4,23 @@ import { FaSortAlphaDown, FaSortAlphaUp, FaSortNumericDown, FaSortNumericUp } fr
 function RepositoryList({ repositories }) {
     const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc'
     const [sortedRepositories, setSortedRepositories] = useState([]);
-    const [sortColumn, setSortColumn] = useState('name'); // 'name', 'description', or 'watchers_count'
+    const [sortColumn, setSortColumn] = useState('full_name'); // 'full_name', 'description', or 'watchers_count'
 
     useEffect(() => {
-        setSortedRepositories([...repositories]);
+        setSortedRepositories(repositories);
     }, [repositories]);
 
     const handleSort = (column) => {
         const order = column === sortColumn ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
         const sorted = [...repositories].sort((a, b) => {
-            if (column === 'name') {
-                return order === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+            if (column === 'full_name') {
+                return order === 'asc' ? a.full_name.localeCompare(b.full_name) : b.full_name.localeCompare(a.full_name);
             } else if (column === 'description') {
                 return order === 'asc' ? (a.description || '').localeCompare(b.description || '') : (b.description || '').localeCompare(a.description || '');
             } else if (column === 'watchers_count') {
                 return order === 'asc' ? a.watchers_count - b.watchers_count : b.watchers_count - a.watchers_count;
             } else {
-                return order === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+                return order === 'asc' ? a.full_name.localeCompare(b.full_name) : b.full_name.localeCompare(a.full_name);
             }
         });
         setSortedRepositories(sorted);
@@ -34,16 +34,14 @@ function RepositoryList({ repositories }) {
         }
         return null;
     };
-    console.log('repositories', repositories);
-    console.log('sortedRepositories', sortedRepositories);
     return (
         <div className="table-responsive">
             <table className="table table-striped">
                 <thead>
                     <tr>
-                        <th className="sortable" onClick={() => handleSort('name')}>
+                        <th className="sortable" onClick={() => handleSort('full_name')}>
                             Name{' '}
-                            {renderSortIcon('name')}
+                            {renderSortIcon('full_name')}
                         </th>
                         <th className="sortable" onClick={() => handleSort('description')}>
                             Description{' '}
@@ -58,7 +56,7 @@ function RepositoryList({ repositories }) {
                 <tbody>
                     {sortedRepositories?.map((repo, index) => (
                         <tr key={repo?.id} style={{ backgroundColor: index % 2 === 0 ? '#f0f0f0' : 'white' }}>
-                            <td>{repo?.name}</td>
+                            <td>{repo?.full_name}</td>
                             <td>{repo?.description}</td>
                             <td>{repo?.watchers_count}</td>
                         </tr>

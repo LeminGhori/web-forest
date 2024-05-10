@@ -2,11 +2,16 @@ import Form from './components/Form/Form';
 import './App.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ErrorPage from './components/ErrorPage';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import RepositoryList from './components/List/RepositoryList';
 import Search from './components/List/Search';
 function App() {
   const [isLogin, setIsLogin] = useState(false);
+  useEffect(() => {
+    if (localStorage.getItem('token') && localStorage.getItem('token') != undefined && localStorage.getItem('token') !== null) {
+      setIsLogin(true);
+    }
+  }, []);
   return (
     <BrowserRouter>
       {

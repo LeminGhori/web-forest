@@ -16,11 +16,17 @@ function Search() {
         event.preventDefault();
 
         try {
-            const userResponse = await axios.get(`https://api.github.com/users/${username}`);
-            const reposResponse = await axios.get(`https://api.github.com/users/${username}/repos`);
+            const token = localStorage.getItem('token');
 
-            setRepositories(reposResponse.data.sort((a, b) => b.watchers_count - a.watchers_count));
-            setAvatarUrl(userResponse.data.avatar_url);
+            const config = {
+                headers: {
+                    'Authorization': token
+                }
+            };
+
+            const reposResponse = await axios.get(`http://localhost:7000/api/user-repo/${username}?`, config);
+            setRepositories(reposResponse?.data?.totalRecord?.sort((a, b) => b.watchers_count - a.watchers_count));
+            setAvatarUrl(reposResponse?.data?.totalRecord[0]?.avatar_url);
             setError(null); // Reset error state
         } catch (error) {
             console.error('Error fetching data:', error);

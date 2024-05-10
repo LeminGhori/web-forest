@@ -85,6 +85,8 @@ function Form({ setIsLogin }) {
                 otp: otp
             }).then((res) => {
                 setIsLogin(true);
+                debugger;
+                localStorage.setItem('token', res.data.createToken);
             }).catch((err) => {
                 console.log(err);
             })
